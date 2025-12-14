@@ -1,8 +1,11 @@
-import {
-    SlashCommandParser,
-    SlashCommand,
-    SlashCommandNamedArgument
-} from "/scripts/slash-commands.js";
+import { MacrosParser } from "/scripts/macros.js";
+
+const getMacroValue = () => {
+    return "Example Value";
+};
+jQuery(() => {
+    MacrosParser.registerMacro("chargroup", ()=>getMacroValue(), "This macro is replaced by a list of all characters within the group");
+});
 
 export default {
     name: "Macros Module",
@@ -11,26 +14,3 @@ export default {
     },
     cannotBeDisabled: true
 };
-
-jQuery(() => {
-    SlashCommandParser.addCommandObject(
-        SlashCommand.fromProps({
-            name: "hello",
-            helpString: "Say hello with optional text",
-            aliases: ["hi"],
-            namedArgumentList: [
-                SlashCommandNamedArgument.fromProps({
-                    name: "times",
-                    description: "How many times to repeat greeting",
-                    defaultValue: "1"
-                })
-            ],
-            callback: (namedArgs, unnamedArgs) => {
-                const times = Number(namedArgs.times ?? 1);
-                return Array(times).fill(
-                    `Hi there ${unnamedArgs || ""}`
-                ).join("\n");
-            }
-        })
-    );
-});
