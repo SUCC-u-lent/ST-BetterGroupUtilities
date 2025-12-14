@@ -78,6 +78,12 @@ jQuery(async ()=>{
         const contentArea = moduleContainer.find('.inline-drawer-content');
         
         // Generate settings UI for each setting
+        module.settings = module.settings || {};
+        // Add a Enabled option unless the module has cannotBeDisabled set to true
+        if (!module.cannotBeDisabled) {
+            const enabledSetting = createSettingElement('Enabled', true, module);
+            contentArea.append(enabledSetting);
+        }
         Object.keys(module.settings).forEach(settingKey => {
             const settingValue = module.settings[settingKey];
             const settingElement = createSettingElement(settingKey, settingValue, module);
