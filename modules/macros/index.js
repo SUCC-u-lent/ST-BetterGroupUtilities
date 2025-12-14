@@ -1,12 +1,12 @@
 import { MacrosParser } from "/scripts/macros.js";
-import { getContext } from '/scripts/extensions.js';
+import { getCurrentChatDetails } from '/scripts/script.js';
 
 const getMacroValue = () => {
     return "Example Value";
 };
 jQuery(async () => {
-    const context = getContext();
-    console.log(await context.getCharacters());
+    const context = getCurrentChatDetails();
+    console.log(context);
     MacrosParser.registerMacro("chargroup", ()=>getMacroValue(), "This macro is replaced by a list of all characters within the group");
 });
 
