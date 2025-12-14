@@ -1,5 +1,5 @@
 import { MacrosParser } from "/scripts/macros.js";
-import { getCurrentChatDetails } from '/scripts/script.js';
+import { getCurrentChatDetails } from '/script.js';
 
 const getMacroValue = () => {
     return "Example Value";
