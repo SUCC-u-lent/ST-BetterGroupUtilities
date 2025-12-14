@@ -2,7 +2,10 @@ import { MacrosParser } from "/scripts/macros.js";
 import { getContext } from '/scripts/extensions.js';
 
 const getMacroValue = () => {
-    console.log(getContext())
+    const context = getContext();
+    context.getCharacters().then(characters=>{
+        console.log(characters);
+    })
     return "Example Value";
 };
 jQuery(() => {
