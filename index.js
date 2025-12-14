@@ -66,34 +66,46 @@ function createSettingElement(settingKey, settingValue, module) {
 jQuery(async () => {
     await loadModules();
 
-    const settingsHtml = await $.get(`${extensionFolderPath}/mainHtml.html`);
-    const $settings = $(settingsHtml);
+    // Convert HTML string into a single DOM instance
+    const $settingsRoot = $(await $.get(`${extensionFolderPath}/mainHtml.html`));
 
-    $('#extensions_settings').append($settings);
+    // Attach it once
+    $('#extensions_settings').append($settingsRoot);
     console.log("Loaded extension settings HTML");
 
-    const moduleContainerTemplate = $settings.find('#module-container-template');
+    // Find the template inside the *attached* DOM
+    const $moduleContainerTemplate =
+        $settingsRoot.find('#module-container-template');
 
     Modules.forEach(module => {
         module.settings ??= {};
 
-        const moduleContainer = moduleContainerTemplate.clone(true, true);
-        moduleContainer.removeAttr('id hidden');
+        const $moduleContainer =
+            $moduleContainerTemplate.clone(true, true)
+                .removeAttr('id hidden');
 
         if (module.name) {
-            moduleContainer.find('.inline-drawer-toggle b').text(module.name);
+            $moduleContainer
+                .find('.inline-drawer-toggle b')
+                .text(module.name);
         }
 
-        const contentArea = moduleContainer.find('.inline-drawer-content');
+        const $contentArea =
+            $moduleContainer.find('.inline-drawer-content');
 
         if (!module.cannotBeDisabled) {
-            contentArea.append(createSettingElement('Enabled', true, module));
+            $contentArea.append(
+                createSettingElement('Enabled', true, module)
+            );
         }
 
         Object.entries(module.settings).forEach(([key, value]) => {
-            contentArea.append(createSettingElement(key, value, module));
+            $contentArea.append(
+                createSettingElement(key, value, module)
+            );
         });
 
-        $settings.append(moduleContainer);
+        // Append to the SAME settings DOM tree
+        $settingsRoot.append($moduleContainer);
     });
 });
