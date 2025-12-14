@@ -1,17 +1,25 @@
 const extensionName = "ST-BetterGroupUtilities";
 const extensionFolderPath = `scripts/extensions/third-party/${extensionName}`;
 
-var ModulePaths = [
+const ModulePaths = [
     `./modules/macros`,
-]
-var Modules = [];
-// Modules each require an index.js file that exports their public API
-ModulePaths.forEach(path => {
-    import(path + '/index.js').then(module => {
-        Modules.push(module.default);
-        console.log(`Loaded module from ${path}`);
-    });
-});
+];
+
+let Modules = [];
+
+async function loadModules() {
+    const loaded = await Promise.all(
+        ModulePaths.map(path =>
+            import(path + '/index.js').then(module => {
+                console.log(`Loaded module from ${path}`);
+                return module.default;
+            })
+        )
+    );
+
+    Modules = loaded.filter(Boolean);
+}
+
 
 // Helper function to create setting UI elements
 function createSettingElement(settingKey, settingValue, module) {
@@ -55,43 +63,37 @@ function createSettingElement(settingKey, settingValue, module) {
     return container;
 }
 
-jQuery(async ()=>{
+jQuery(async () => {
+    await loadModules();
+
     const settingsHtml = await $.get(`${extensionFolderPath}/mainHtml.html`);
-    $('#extensions_settings').append(settingsHtml);
+    const $settings = $(settingsHtml);
+
+    $('#extensions_settings').append($settings);
     console.log("Loaded extension settings HTML");
-    console.log($('#extension-settings').html());
-    const moduleContainerTemplate = $(settingsHtml).find('#module-container-template')
-    
-    Modules.forEach(module=>{
-        if (!module.settings) {
-            module.settings = {};
-        }
-        // Clone the template for this module
+
+    const moduleContainerTemplate = $settings.find('#module-container-template');
+
+    Modules.forEach(module => {
+        module.settings ??= {};
+
         const moduleContainer = moduleContainerTemplate.clone(true, true);
-        moduleContainer.removeAttr('id'); // Remove template id
-        moduleContainer.removeAttr('hidden'); // Make it visible
-        
-        // Set module title if provided
+        moduleContainer.removeAttr('id hidden');
+
         if (module.name) {
             moduleContainer.find('.inline-drawer-toggle b').text(module.name);
         }
-        
+
         const contentArea = moduleContainer.find('.inline-drawer-content');
-        
-        // Generate settings UI for each setting
-        module.settings = module.settings || {};
-        // Add a Enabled option unless the module has cannotBeDisabled set to true
+
         if (!module.cannotBeDisabled) {
-            const enabledSetting = createSettingElement('Enabled', true, module);
-            contentArea.append(enabledSetting);
+            contentArea.append(createSettingElement('Enabled', true, module));
         }
-        Object.keys(module.settings).forEach(settingKey => {
-            const settingValue = module.settings[settingKey];
-            const settingElement = createSettingElement(settingKey, settingValue, module);
-            contentArea.append(settingElement);
+
+        Object.entries(module.settings).forEach(([key, value]) => {
+            contentArea.append(createSettingElement(key, value, module));
         });
-        
-        // Append the module container to the main settings
-        $(settingsHtml).append(moduleContainer);
-    })
-})
+
+        $settings.append(moduleContainer);
+    });
+});
