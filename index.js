@@ -1,4 +1,4 @@
-const extensionName = "ST_BetterGroupUtilities";
+const extensionName = "ST-BetterGroupUtilities";
 const extensionFolderPath = `scripts/extensions/third-party/${extensionName}`;
 
 var ModulePaths = [
