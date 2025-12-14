@@ -61,10 +61,7 @@ jQuery(async ()=>{
     const moduleContainerTemplate = $(settingsHtml).find('#module-container-template')
     
     Modules.forEach(module=>{
-        if (module.settings == undefined){
-            console.warn(`Module ${module.name} has no settings defined.`);
-            return;
-        }
+        module.settings = module.settings || {};
         // Clone the template for this module
         const moduleContainer = moduleContainerTemplate.clone(true, true);
         moduleContainer.removeAttr('id'); // Remove template id
