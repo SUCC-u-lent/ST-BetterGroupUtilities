@@ -92,6 +92,7 @@ jQuery(async () => {
         const $moduleDrawer =
             $template.clone(true)
                 .removeAttr("id hidden");
+        $moduleDrawer.addClass("bgutils-submodule");
 
         if (module.name) {
             $moduleDrawer
