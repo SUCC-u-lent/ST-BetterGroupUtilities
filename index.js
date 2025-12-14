@@ -57,7 +57,7 @@ function createSettingElement(settingKey, settingValue, module) {
 
 jQuery(async ()=>{
     const settingsHtml = await $.get(`${extensionFolderPath}/mainHtml.html`);
-    $('#extension-settings').append(settingsHtml);
+    $('#extensions_settings').append(settingsHtml);
     console.log("Loaded extension settings HTML");
     console.log($('#extension-settings').html());
     const moduleContainerTemplate = $(settingsHtml).find('#module-container-template')
