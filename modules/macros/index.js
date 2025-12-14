@@ -4,9 +4,9 @@ import { getContext } from '/scripts/extensions.js';
 const getMacroValue = () => {
     return "Example Value";
 };
-jQuery(() => {
+jQuery(async () => {
     const context = getContext();
-    console.log(context);
+    console.log(await context.getCharacters());
     MacrosParser.registerMacro("chargroup", ()=>getMacroValue(), "This macro is replaced by a list of all characters within the group");
 });
 
