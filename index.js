@@ -2,7 +2,7 @@ const extensionName = "st-extension-example";
 const extensionFolderPath = `scripts/extensions/third-party/${extensionName}`;
 
 var ModulePaths = [
-    `${extensionFolderPath}/modules/macros/index.js`,
+    `${extensionFolderPath}/modules/macros`,
 ]
 var Modules = [];
 // Modules each require an index.js file that exports their public API
