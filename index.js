@@ -59,7 +59,7 @@ jQuery(async ()=>{
     const settingsHtml = await $.get(`${extensionFolderPath}/mainHtml.html`);
     $('#extension-settings').append(settingsHtml);
     console.log("Loaded extension settings HTML");
-    console.log($('#extension-settings'));
+    console.log($('#extension-settings').html());
     const moduleContainerTemplate = $(settingsHtml).find('#module-container-template')
     
     Modules.forEach(module=>{
