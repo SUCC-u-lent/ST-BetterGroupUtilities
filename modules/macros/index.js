@@ -1,4 +1,8 @@
-import { SlashCommandParser, SlashCommand, SlashCommandNamedArgument } from "../../../slash-commands.js";
+import {
+    SlashCommandParser,
+    SlashCommand,
+    SlashCommandNamedArgument
+} from "/scripts/slash-commands.js";
 
 export default {
     name: "Macros Module",
@@ -6,27 +10,27 @@ export default {
         enableMacros_onLoad: true
     },
     cannotBeDisabled: true
-}
+};
 
-jQuery(async()=>{
+jQuery(() => {
     SlashCommandParser.addCommandObject(
         SlashCommand.fromProps({
-            name: "hello",            // `/hello`
-            callback: (namedArgs, unnamedArgs) => {
-                // namedArgs: object of `--option=value` flags
-                // unnamedArgs: remainder string
-                return `Hi there ${unnamedArgs || ""}`;
-            },
+            name: "hello",
             helpString: "Say hello with optional text",
-            aliases: ["hi"],          // `/hi` also works
-            // You can define arguments if you need them:
+            aliases: ["hi"],
             namedArgumentList: [
                 SlashCommandNamedArgument.fromProps({
                     name: "times",
                     description: "How many times to repeat greeting",
                     defaultValue: "1"
                 })
-            ]
+            ],
+            callback: (namedArgs, unnamedArgs) => {
+                const times = Number(namedArgs.times ?? 1);
+                return Array(times).fill(
+                    `Hi there ${unnamedArgs || ""}`
+                ).join("\n");
+            }
         })
     );
-})
+});
