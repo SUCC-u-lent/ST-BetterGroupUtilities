@@ -1,6 +1,8 @@
 import { MacrosParser } from "/scripts/macros.js";
+import { getContext } from '/scripts/extensions.js';
 
 const getMacroValue = () => {
+    console.log(getContext())
     return "Example Value";
 };
 jQuery(() => {
