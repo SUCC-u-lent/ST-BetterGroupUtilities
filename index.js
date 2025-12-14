@@ -92,6 +92,6 @@ jQuery(async ()=>{
         });
         
         // Append the module container to the main settings
-        $('#extension-settings').append(moduleContainer);
+        $(settingsHtml).append(moduleContainer);
     })
 })
