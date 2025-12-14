@@ -1,14 +1,15 @@
 const extensionName = "st-extension-example";
 const extensionFolderPath = `scripts/extensions/third-party/${extensionName}`;
 
-var ModulePaths = {
-
-}
+var ModulePaths = [
+    `${extensionFolderPath}/modules/macros/index.js`,
+]
 var Modules = [];
 // Modules each require an index.js file that exports their public API
 ModulePaths.forEach(path => {
     import(path + '/index.js').then(module => {
         Modules.push(module);
+        console.log(`Loaded module from ${path}`);
     });
 });
 
@@ -60,28 +61,30 @@ jQuery(async ()=>{
     const moduleContainerTemplate = $(settingsHtml).find('#module-container-template')
     
     Modules.forEach(module=>{
-        if (module.settings){
-            // Clone the template for this module
-            const moduleContainer = moduleContainerTemplate.clone(true, true);
-            moduleContainer.removeAttr('id'); // Remove template id
-            moduleContainer.removeAttr('hidden'); // Make it visible
-            
-            // Set module title if provided
-            if (module.name) {
-                moduleContainer.find('.inline-drawer-toggle b').text(module.name);
-            }
-            
-            const contentArea = moduleContainer.find('.inline-drawer-content');
-            
-            // Generate settings UI for each setting
-            Object.keys(module.settings).forEach(settingKey => {
-                const settingValue = module.settings[settingKey];
-                const settingElement = createSettingElement(settingKey, settingValue, module);
-                contentArea.append(settingElement);
-            });
-            
-            // Append the module container to the main settings
-            $('#extension-settings').append(moduleContainer);
+        if (module.settings == undefined){
+            console.warn(`Module ${module.name} has no settings defined.`);
+            return;
         }
+        // Clone the template for this module
+        const moduleContainer = moduleContainerTemplate.clone(true, true);
+        moduleContainer.removeAttr('id'); // Remove template id
+        moduleContainer.removeAttr('hidden'); // Make it visible
+        
+        // Set module title if provided
+        if (module.name) {
+            moduleContainer.find('.inline-drawer-toggle b').text(module.name);
+        }
+        
+        const contentArea = moduleContainer.find('.inline-drawer-content');
+        
+        // Generate settings UI for each setting
+        Object.keys(module.settings).forEach(settingKey => {
+            const settingValue = module.settings[settingKey];
+            const settingElement = createSettingElement(settingKey, settingValue, module);
+            contentArea.append(settingElement);
+        });
+        
+        // Append the module container to the main settings
+        $('#extension-settings').append(moduleContainer);
     })
 })
