@@ -8,7 +8,7 @@ var Modules = [];
 // Modules each require an index.js file that exports their public API
 ModulePaths.forEach(path => {
     import(path + '/index.js').then(module => {
-        Modules.push(module);
+        Modules.push(module.default);
         console.log(`Loaded module from ${path}`);
     });
 });
@@ -61,7 +61,9 @@ jQuery(async ()=>{
     const moduleContainerTemplate = $(settingsHtml).find('#module-container-template')
     
     Modules.forEach(module=>{
-        module.settings = module.settings || {};
+        if (!module.settings) {
+            module.settings = {};
+        }
         // Clone the template for this module
         const moduleContainer = moduleContainerTemplate.clone(true, true);
         moduleContainer.removeAttr('id'); // Remove template id
